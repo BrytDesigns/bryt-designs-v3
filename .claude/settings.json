@@ -1,0 +1,28 @@
+{
+  "extraKnownMarketplaces": {
+    "oac-marketplace": {
+      "source": {
+        "source": "github",
+        "repo": "darrenhinde/OpenAgentsControl"
+      }
+    }
+  },
+  "enabledPlugins": {
+    "oac@oac-marketplace": true,
+    "mattpocock-skills@claude-plugins-official": true,
+    "figma@claude-plugins-official": true
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/check-team-tools.sh\"",
+            "timeout": 15
+          }
+        ]
+      }
+    ]
+  }
+}

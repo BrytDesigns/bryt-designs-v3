@@ -1,0 +1,15 @@
+onlyBuiltDependencies:
+  - workerd
+
+peerDependencyRules:
+  allowedVersions:
+    # @kobalte/core@2.0.0-alpha.4 pins its Solid peers to exactly 2.0.0-rc.16.
+    # rc.17-rc.19 are patch releases, and Kobalte ships JSX source that our
+    # compiler builds. Remove these once Kobalte publishes an alpha for the current RC.
+    "@kobalte/core>solid-js": "2.0.0-rc.19"
+    "@kobalte/core>@solidjs/web": "2.0.0-rc.19"
+    "@kobalte/utils>solid-js": "2.0.0-rc.19"
+    "@kobalte/utils>@solidjs/web": "2.0.0-rc.19"
+    # capnp-es (via @alchemy.run/cloudflare-runtime) only loads typescript in its
+    # codegen compiler, which Alchemy never imports.
+    "capnp-es>typescript": "7"
