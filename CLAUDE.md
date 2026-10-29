@@ -31,6 +31,7 @@ pnpm workspaces, no Turborepo. Two folders, packages scoped `@repo/*`:
   - `core`: Effect utilities and services. Imports no UI code.
   - `design-system`: base styles, the Tailwind setup and brand tokens (`@repo/design-system/styles.css`).
   - `ui`: Kobalte components styled with the design system, one entry per component (`@repo/ui/button`).
+  - `analytics`: the Tag Manager container loader and a typed `track()`. Tags, triggers and conversions live in Tag Manager, not in code.
 
 Packages ship TypeScript source with no build step; the app's Vite build compiles them. Imports only flow from apps into packages, and from `ui` into `design-system` or `core`; `core` never imports UI code. A package that uses Tailwind classes exports a `styles.css` holding `@source "./"`, which the app imports after the design system's (see `apps/web/src/index.css`).
 
