@@ -1,0 +1,3 @@
+/* Apps import this next to @repo/design-system/styles.css so Tailwind scans
+   these components for the classes they use. */
+@source "./";

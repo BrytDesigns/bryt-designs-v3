@@ -1,3 +1,25 @@
+packages:
+  - apps/*
+  - packages/*
+
+# Versions shared across workspaces, or that must move together. Solid in
+# particular must resolve to a single copy, or components from packages/ui won't
+# share the app's reactive runtime.
+catalog:
+  "@solidjs/web": 2.0.0-rc.19
+  "@tailwindcss/vite": ^4.3.3
+  effect: ^4.0.7
+  solid-js: 2.0.0-rc.19
+  tailwindcss: ^4.3.3
+  typescript: ^7.0.2
+
+# CLAUDE.md and the symlinked skills in .claude/skills read docs out of these
+# packages at the root node_modules, though only workspaces depend on them.
+publicHoistPattern:
+  - solid-js
+  - "@solidjs/web"
+  - "@solidjs/diagnostics"
+
 onlyBuiltDependencies:
   - workerd
 

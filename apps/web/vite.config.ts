@@ -17,6 +17,8 @@ export default defineConfig({
     fileRoutes({ httpMethods: true, types: true }),
     tailwindcss(),
   ],
+  // One set of .env files at the repo root, shared with alchemy.run.ts.
+  envDir: "../..",
   build: {
     target: "esnext",
     assetsInlineLimit: 0,

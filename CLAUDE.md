@@ -20,7 +20,25 @@ Everyone working in this repo with Claude needs all of these. A SessionStart hoo
 - **Asana MCP**, connected through the claude.ai Asana connector or your own Asana MCP app (Asana doesn't allow a shared one). Every issue gets an Asana task, so if no Asana tools are available, stop and ask the user to connect Asana before creating issues.
 - **Figma MCP**, from the `figma` plugin enabled in `.claude/settings.json`. Sign in to Figma when first prompted.
 - **`pnpm install`**, so the skills in `.claude/skills/` that link into `node_modules` resolve.
-- **`.env`**, copied from `.env.example` with `SESSION_SECRET` set. The server refuses to start without it. Env vars are declared and validated in `env.ts`.
+- **`.env`** at the repo root, copied from `.env.example` with `SESSION_SECRET` set. The server refuses to start without it. Vite and Alchemy both read it; env vars are declared and validated in `apps/web/env.ts`.
+
+## Monorepo
+
+pnpm workspaces, no Turborepo. Two folders, packages scoped `@repo/*`:
+
+- **`apps/`**: deployable apps. `apps/web` (`@repo/web`) is the marketing site.
+- **`packages/`**: utility libraries and services the apps share.
+  - `core`: Effect utilities and services. Imports no UI code.
+  - `design-system`: base styles, the Tailwind setup and brand tokens (`@repo/design-system/styles.css`).
+  - `ui`: Kobalte components styled with the design system, one entry per component (`@repo/ui/button`).
+
+Packages ship TypeScript source with no build step; the app's Vite build compiles them. Imports only flow from apps into packages, and from `ui` into `design-system` or `core`; `core` never imports UI code. A package that uses Tailwind classes exports a `styles.css` holding `@source "./"`, which the app imports after the design system's (see `apps/web/src/index.css`).
+
+Add a dependency to the workspace that imports it (`pnpm --filter @repo/ui add <pkg>`). A version shared by several workspaces goes in the `catalog` in `pnpm-workspace.yaml` and is referenced as `"catalog:"`. Root scripts (`pnpm dev`, `build`, `typecheck`, `lint`) cover every workspace.
+
+## Figma
+
+The root design file is [Bryt Designs v3 (2026)](https://www.figma.com/design/f8OmlqSvL0d4JhS4BNA6Dd/Bryt-Designs-v3--2026-?node-id=0-1): file key `f8OmlqSvL0d4JhS4BNA6Dd`, root node `0:1`. Reference it for every design, component, token or layout question, and start Figma MCP sessions with this file key unless the user links a different file. A node link into this file only narrows where to look.
 
 ## Effect
 
@@ -34,7 +52,7 @@ guide doesn't cover, search through the source code in `node_modules/effect/src`
 
 ## Alchemy
 
-Infrastructure is Alchemy v2 (`alchemy` and `@alchemy.run/cloudflare` at 2.0.0-beta.84), not v1's `await alchemy(...)`. Use the `alchemy` skill before changing `alchemy.run.ts`. The installed source in `node_modules/alchemy/src` and `node_modules/@alchemy.run/cloudflare/src` wins over the skill and over the docs (https://alchemy.run/llms.txt).
+Infrastructure is Alchemy v2 (`alchemy` and `@alchemy.run/cloudflare` at 2.0.0-beta.84), not v1's `await alchemy(...)`. Use the `alchemy` skill before changing `alchemy.run.ts`, which lives at the root and deploys `apps/web` through `rootDir`. The installed source in `node_modules/alchemy/src` and `node_modules/@alchemy.run/cloudflare/src` wins over the skill and over the docs (https://alchemy.run/llms.txt).
 
 Production is the `production` stage, deployed with `pnpm run deploy` (plain `pnpm deploy` is a pnpm built-in). That stage reads secrets from `.env.production` only, which comes from the team password manager; every other stage reads `.env`. Never deploy to `production` without the user asking.
 
