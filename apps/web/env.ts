@@ -10,5 +10,9 @@ export default {
     // Signs the session cookie. Comma-separated, newest first; see src/server/session.ts.
     SESSION_SECRET: v.pipe(v.string(), v.minLength(32)),
   },
-  client: {},
+  client: {
+    // Tag Manager container. Unset (local dev) loads no container, so no
+    // traffic reaches GA4; set it for staging and production.
+    VITE_GTM_ID: v.optional(v.pipe(v.string(), v.regex(/^GTM-[A-Z0-9]+$/))),
+  },
 };

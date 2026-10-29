@@ -56,6 +56,9 @@ importers:
       '@remix-run/cookie':
         specifier: ^0.5.4
         version: 0.5.4
+      '@repo/analytics':
+        specifier: workspace:*
+        version: link:../../packages/analytics
       '@repo/design-system':
         specifier: workspace:*
         version: link:../../packages/design-system
@@ -99,6 +102,18 @@ importers:
       vite:
         specifier: ^8.3.5
         version: 8.3.5(@types/node@26.6.5)(jiti@2.7.0)(yaml@2.9.1)
+
+  packages/analytics:
+    devDependencies:
+      '@solidjs/web':
+        specifier: 'catalog:'
+        version: 2.0.0-rc.19(solid-js@2.0.0-rc.19)
+      solid-js:
+        specifier: 'catalog:'
+        version: 2.0.0-rc.19
+      typescript:
+        specifier: 'catalog:'
+        version: 7.0.2
 
   packages/core:
     dependencies:
