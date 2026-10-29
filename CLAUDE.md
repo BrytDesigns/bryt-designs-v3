@@ -22,6 +22,10 @@ Everyone working in this repo with Claude needs all of these. A SessionStart hoo
 - **`pnpm install`**, so the skills in `.claude/skills/` that link into `node_modules` resolve.
 - **`.env`**, copied from `.env.example` with `SESSION_SECRET` set. The server refuses to start without it. Env vars are declared and validated in `env.ts`.
 
+## Figma
+
+The root design file is [Bryt Designs v3 (2026)](https://www.figma.com/design/f8OmlqSvL0d4JhS4BNA6Dd/Bryt-Designs-v3--2026-?node-id=0-1): file key `f8OmlqSvL0d4JhS4BNA6Dd`, root node `0:1`. Reference it for every design, component, token or layout question, and start Figma MCP sessions with this file key unless the user links a different file. A node link into this file only narrows where to look.
+
 ## Effect
 
 This repository uses the Effect Typescript library.
