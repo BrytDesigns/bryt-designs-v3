@@ -20,7 +20,7 @@ Everyone working in this repo with Claude needs all of these. A SessionStart hoo
 - **Asana MCP**, connected through the claude.ai Asana connector or your own Asana MCP app (Asana doesn't allow a shared one). Every issue gets an Asana task, so if no Asana tools are available, stop and ask the user to connect Asana before creating issues.
 - **Figma MCP**, from the `figma` plugin enabled in `.claude/settings.json`. Sign in to Figma when first prompted.
 - **`pnpm install`**, so the skills in `.claude/skills/` that link into `node_modules` resolve.
-- **`.env`** at the repo root, copied from `.env.example` with `SESSION_SECRET` set. The server refuses to start without it. Vite and Alchemy both read it; env vars are declared and validated in `apps/web/env.ts`.
+- **`.env`** at the repo root, copied from `.env.example` with `SESSION_SECRET` set. The server refuses to start without it. Vite and Alchemy both read it; see **Env vars** below.
 
 ## Monorepo
 
@@ -31,10 +31,15 @@ pnpm workspaces, no Turborepo. Two folders, packages scoped `@repo/*`:
   - `core`: Effect utilities and services. Imports no UI code.
   - `design-system`: base styles, the Tailwind setup and brand tokens (`@repo/design-system/styles.css`).
   - `ui`: Kobalte components styled with the design system, one entry per component (`@repo/ui/button`).
+  - `wordpress`: the WordPress GraphQL client the Insights pages read. Operations live in `src/queries.graphql`; `pnpm --filter @repo/wordpress codegen` regenerates the typed `.graphql.ts` beside it (committed, never edited), and `schema:pull` refreshes `src/schema.graphql`, which codegen checks them against.
 
 Packages ship TypeScript source with no build step; the app's Vite build compiles them. Imports only flow from apps into packages, and from `ui` into `design-system` or `core`; `core` never imports UI code. A package that uses Tailwind classes exports a `styles.css` holding `@source "./"`, which the app imports after the design system's (see `apps/web/src/index.css`).
 
-Add a dependency to the workspace that imports it (`pnpm --filter @repo/ui add <pkg>`). A version shared by several workspaces goes in the `catalog` in `pnpm-workspace.yaml` and is referenced as `"catalog:"`. Root scripts (`pnpm dev`, `build`, `typecheck`, `lint`) cover every workspace.
+Add a dependency to the workspace that imports it (`pnpm --filter @repo/ui add <pkg>`). A version shared by several workspaces goes in the `catalog` in `pnpm-workspace.yaml` and is referenced as `"catalog:"`. Root scripts (`pnpm dev`, `build`, `typecheck`, `lint`, `test`) cover every workspace.
+
+## Env vars
+
+A package declares the vars it reads with `defineEnv` from `@repo/core/env` (see `packages/wordpress/src/env.ts`), and its Effect layers read them through the matching `config` entries. `apps/web/env.ts` passes its own vars first, then every package it uses, to `composeEnv`; the Solid plugin validates the result at boot and types `virtual:env/server` and `virtual:env/client` from it. Several packages may declare the same var: it's checked against each. A new var also needs a binding in `alchemy.run.ts` and a line in `.env.example`. See `docs/adr/0001-env-composition.md`.
 
 ## Figma
 

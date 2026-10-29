@@ -6,12 +6,18 @@ packages:
 # particular must resolve to a single copy, or components from packages/ui won't
 # share the app's reactive runtime.
 catalog:
+  # Each @effect/* release peers on effect at the same minor, so these stay on
+  # effect's minor and move with it.
+  "@effect/graphql-generator": ~4.0.7
+  "@effect/platform-node": ~4.0.7
+  "@effect/vitest": ~4.0.7
   "@solidjs/web": 2.0.0-rc.19
   "@tailwindcss/vite": ^4.3.3
   effect: ^4.0.7
   solid-js: 2.0.0-rc.19
   tailwindcss: ^4.3.3
   typescript: ^7.0.2
+  vitest: ^5.0.5
 
 # CLAUDE.md and the symlinked skills in .claude/skills read docs out of these
 # packages at the root node_modules, though only workspaces depend on them.

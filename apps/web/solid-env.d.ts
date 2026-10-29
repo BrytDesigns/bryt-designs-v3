@@ -20,6 +20,8 @@ declare module 'virtual:env/server' {
     : string;
   const env: {
     readonly "SESSION_SECRET": __Out<__Schema["server"]["SESSION_SECRET"]>;
+    readonly "WORDPRESS_GRAPHQL_URL": __Out<__Schema["server"]["WORDPRESS_GRAPHQL_URL"]>;
+    readonly "SITE_URL": __Out<__Schema["server"]["SITE_URL"]>;
   };
   export { env };
   export default env;

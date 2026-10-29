@@ -1,0 +1,29 @@
+{
+  "name": "@repo/wordpress",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./env": "./src/env.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "codegen": "graphqlgen",
+    "schema:pull": "node --env-file-if-exists=../../.env scripts/pull-schema.ts && graphqlgen"
+  },
+  "dependencies": {
+    "@repo/core": "workspace:*",
+    "effect": "catalog:"
+  },
+  "devDependencies": {
+    "@effect/graphql-generator": "catalog:",
+    "@effect/platform-node": "catalog:",
+    "@effect/vitest": "catalog:",
+    "@types/node": "^24.19.2",
+    "graphql": "^17.0.2",
+    "typescript": "catalog:",
+    "vitest": "catalog:"
+  }
+}

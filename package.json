@@ -12,13 +12,14 @@
     "build": "pnpm -r build",
     "preview": "pnpm --filter @repo/web preview",
     "typecheck": "tsc --noEmit && pnpm -r typecheck",
+    "test": "pnpm -r test",
     "deploy": "alchemy deploy --stage production",
     "destroy": "alchemy destroy",
     "lint": "oxlint apps packages"
   },
   "devDependencies": {
     "@alchemy.run/cloudflare": "2.0.0-beta.84",
-    "@effect/platform-node": "^4.0.7",
+    "@effect/platform-node": "catalog:",
     "alchemy": "2.0.0-beta.84",
     "effect": "catalog:",
     "eslint-plugin-solid": "~0.18.1",
