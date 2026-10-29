@@ -10,4 +10,4 @@ Claude Code loads every folder here as a skill for everyone working in this repo
 | `alchemy` | Copied from [darjss/alchemy-skill](https://github.com/darjss/alchemy-skill) at `a1746ec` (community; reviewed 2026-10-28 against `alchemy@2.0.0-beta.84`) | Re-copy `skills/alchemy/` and review it again whenever `alchemy` is bumped |
 | `asana-updates` | Bryt Designs team convention | Edit in place |
 
-The symlinked skills resolve only after `pnpm install`.
+The symlinked skills resolve only after `pnpm install`. Only workspaces under `apps/` and `packages/` depend on the Solid packages, so `publicHoistPattern` in `pnpm-workspace.yaml` keeps them in the root `node_modules` for these links.

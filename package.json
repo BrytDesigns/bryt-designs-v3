@@ -8,36 +8,21 @@
     "node": ">=24.11.1"
   },
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview",
-    "typecheck": "tsc --noEmit",
+    "dev": "pnpm --filter @repo/web dev",
+    "build": "pnpm -r build",
+    "preview": "pnpm --filter @repo/web preview",
+    "typecheck": "tsc --noEmit && pnpm -r typecheck",
     "deploy": "alchemy deploy --stage production",
     "destroy": "alchemy destroy",
-    "lint": "oxlint src"
-  },
-  "dependencies": {
-    "@kobalte/core": "2.0.0-alpha.4",
-    "@remix-run/cookie": "^0.5.4",
-    "@solidjs/meta": "1.0.0-next.2",
-    "@solidjs/router": "2.0.0-next.43",
-    "@solidjs/web": "2.0.0-rc.19",
-    "effect": "^4.0.7",
-    "solid-js": "2.0.0-rc.19",
-    "valibot": "^1.5.0"
+    "lint": "oxlint apps packages"
   },
   "devDependencies": {
     "@alchemy.run/cloudflare": "2.0.0-beta.84",
     "@effect/platform-node": "^4.0.7",
-    "@solidjs/diagnostics": "2.0.0-rc.19",
-    "@solidjs/vite-plugin": "3.0.0-next.52",
-    "@tailwindcss/vite": "^4.3.3",
     "alchemy": "2.0.0-beta.84",
+    "effect": "catalog:",
     "eslint-plugin-solid": "~0.18.1",
-    "filesystem-routing": "0.4.2",
     "oxlint": "~1.79.0",
-    "tailwindcss": "^4.3.3",
-    "typescript": "^7.0.2",
-    "vite": "^8.3.5"
+    "typescript": "catalog:"
   }
 }

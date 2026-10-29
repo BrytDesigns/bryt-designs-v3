@@ -4,34 +4,30 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+catalogs:
+  default:
+    '@solidjs/web':
+      specifier: 2.0.0-rc.19
+      version: 2.0.0-rc.19
+    '@tailwindcss/vite':
+      specifier: ^4.3.3
+      version: 4.3.3
+    effect:
+      specifier: ^4.0.7
+      version: 4.0.7
+    solid-js:
+      specifier: 2.0.0-rc.19
+      version: 2.0.0-rc.19
+    tailwindcss:
+      specifier: ^4.3.3
+      version: 4.3.3
+    typescript:
+      specifier: ^7.0.2
+      version: 7.0.2
+
 importers:
 
   .:
-    dependencies:
-      '@kobalte/core':
-        specifier: 2.0.0-alpha.4
-        version: 2.0.0-alpha.4(@solidjs/web@2.0.0-rc.19(solid-js@2.0.0-rc.19))(solid-js@2.0.0-rc.19)
-      '@remix-run/cookie':
-        specifier: ^0.5.4
-        version: 0.5.4
-      '@solidjs/meta':
-        specifier: 1.0.0-next.2
-        version: 1.0.0-next.2(@solidjs/web@2.0.0-rc.19(solid-js@2.0.0-rc.19))(solid-js@2.0.0-rc.19)
-      '@solidjs/router':
-        specifier: 2.0.0-next.43
-        version: 2.0.0-next.43(@solidjs/web@2.0.0-rc.19(solid-js@2.0.0-rc.19))(filesystem-routing@0.4.2(vite@8.3.5(@types/node@26.6.5)(jiti@2.7.0)(yaml@2.9.1)))(solid-js@2.0.0-rc.19)
-      '@solidjs/web':
-        specifier: 2.0.0-rc.19
-        version: 2.0.0-rc.19(solid-js@2.0.0-rc.19)
-      effect:
-        specifier: ^4.0.7
-        version: 4.0.7
-      solid-js:
-        specifier: 2.0.0-rc.19
-        version: 2.0.0-rc.19
-      valibot:
-        specifier: ^1.5.0
-        version: 1.5.0(typescript@7.0.2)
     devDependencies:
       '@alchemy.run/cloudflare':
         specifier: 2.0.0-beta.84
@@ -39,6 +35,49 @@ importers:
       '@effect/platform-node':
         specifier: ^4.0.7
         version: 4.0.7(effect@4.0.7)(redis@6.3.0)
+      alchemy:
+        specifier: 2.0.0-beta.84
+        version: 2.0.0-beta.84(@effect/platform-node@4.0.7(effect@4.0.7)(redis@6.3.0))(effect@4.0.7)(vite@8.3.5(@types/node@26.6.5)(jiti@2.7.0)(yaml@2.9.1))(ws@8.22.0)
+      effect:
+        specifier: 'catalog:'
+        version: 4.0.7
+      eslint-plugin-solid:
+        specifier: ~0.18.1
+        version: 0.18.1(eslint@10.13.0(jiti@2.7.0))(typescript@7.0.2)
+      oxlint:
+        specifier: ~1.79.0
+        version: 1.79.0
+      typescript:
+        specifier: 'catalog:'
+        version: 7.0.2
+
+  apps/web:
+    dependencies:
+      '@remix-run/cookie':
+        specifier: ^0.5.4
+        version: 0.5.4
+      '@repo/design-system':
+        specifier: workspace:*
+        version: link:../../packages/design-system
+      '@repo/ui':
+        specifier: workspace:*
+        version: link:../../packages/ui
+      '@solidjs/meta':
+        specifier: 1.0.0-next.2
+        version: 1.0.0-next.2(@solidjs/web@2.0.0-rc.19(solid-js@2.0.0-rc.19))(solid-js@2.0.0-rc.19)
+      '@solidjs/router':
+        specifier: 2.0.0-next.43
+        version: 2.0.0-next.43(@solidjs/web@2.0.0-rc.19(solid-js@2.0.0-rc.19))(filesystem-routing@0.4.2(vite@8.3.5(@types/node@26.6.5)(jiti@2.7.0)(yaml@2.9.1)))(solid-js@2.0.0-rc.19)
+      '@solidjs/web':
+        specifier: 'catalog:'
+        version: 2.0.0-rc.19(solid-js@2.0.0-rc.19)
+      solid-js:
+        specifier: 'catalog:'
+        version: 2.0.0-rc.19
+      valibot:
+        specifier: ^1.5.0
+        version: 1.5.0(typescript@7.0.2)
+    devDependencies:
       '@solidjs/diagnostics':
         specifier: 2.0.0-rc.19
         version: 2.0.0-rc.19(@solidjs/web@2.0.0-rc.19(solid-js@2.0.0-rc.19))(solid-js@2.0.0-rc.19)
@@ -46,29 +85,52 @@ importers:
         specifier: 3.0.0-next.52
         version: 3.0.0-next.52(@solidjs/web@2.0.0-rc.19(solid-js@2.0.0-rc.19))(solid-js@2.0.0-rc.19)(vite@8.3.5(@types/node@26.6.5)(jiti@2.7.0)(yaml@2.9.1))
       '@tailwindcss/vite':
-        specifier: ^4.3.3
+        specifier: 'catalog:'
         version: 4.3.3(vite@8.3.5(@types/node@26.6.5)(jiti@2.7.0)(yaml@2.9.1))
-      alchemy:
-        specifier: 2.0.0-beta.84
-        version: 2.0.0-beta.84(@effect/platform-node@4.0.7(effect@4.0.7)(redis@6.3.0))(effect@4.0.7)(vite@8.3.5(@types/node@26.6.5)(jiti@2.7.0)(yaml@2.9.1))(ws@8.22.0)
-      eslint-plugin-solid:
-        specifier: ~0.18.1
-        version: 0.18.1(eslint@10.13.0(jiti@2.7.0))(typescript@7.0.2)
       filesystem-routing:
         specifier: 0.4.2
         version: 0.4.2(vite@8.3.5(@types/node@26.6.5)(jiti@2.7.0)(yaml@2.9.1))
-      oxlint:
-        specifier: ~1.79.0
-        version: 1.79.0
       tailwindcss:
-        specifier: ^4.3.3
+        specifier: 'catalog:'
         version: 4.3.3
       typescript:
-        specifier: ^7.0.2
+        specifier: 'catalog:'
         version: 7.0.2
       vite:
         specifier: ^8.3.5
         version: 8.3.5(@types/node@26.6.5)(jiti@2.7.0)(yaml@2.9.1)
+
+  packages/core:
+    dependencies:
+      effect:
+        specifier: 'catalog:'
+        version: 4.0.7
+    devDependencies:
+      typescript:
+        specifier: 'catalog:'
+        version: 7.0.2
+
+  packages/design-system:
+    dependencies:
+      tailwindcss:
+        specifier: 'catalog:'
+        version: 4.3.3
+
+  packages/ui:
+    dependencies:
+      '@kobalte/core':
+        specifier: 2.0.0-alpha.4
+        version: 2.0.0-alpha.4(@solidjs/web@2.0.0-rc.19(solid-js@2.0.0-rc.19))(solid-js@2.0.0-rc.19)
+    devDependencies:
+      '@solidjs/web':
+        specifier: 'catalog:'
+        version: 2.0.0-rc.19(solid-js@2.0.0-rc.19)
+      solid-js:
+        specifier: 'catalog:'
+        version: 2.0.0-rc.19
+      typescript:
+        specifier: 'catalog:'
+        version: 7.0.2
 
 packages:
 
