@@ -1,7 +1,12 @@
 import { Title } from "@solidjs/meta";
+import type { RouteDefinition } from "@solidjs/router";
 import { createSignal } from "solid-js";
 
 import { Button } from "@repo/ui/button";
+
+export const route = {
+  info: { cache: "page" },
+} satisfies RouteDefinition;
 
 export default function Home() {
   const [count, setCount] = createSignal(0);

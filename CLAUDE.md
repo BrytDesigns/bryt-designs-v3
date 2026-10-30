@@ -42,6 +42,10 @@ Add a dependency to the workspace that imports it (`pnpm --filter @repo/ui add <
 
 A package declares the vars it reads with `defineEnv` from `@repo/core/env` (see `packages/wordpress/src/env.ts`), and its Effect layers read them through the matching `config` entries. `apps/web/env.ts` passes its own vars first, then every package it uses, to `composeEnv`; the Solid plugin validates the result at boot and types `virtual:env/server` and `virtual:env/client` from it. Several packages may declare the same var: it's checked against each. A new var also needs a binding in `alchemy.run.ts` and a line in `.env.example`. See `docs/adr/0001-env-composition.md`.
 
+## Caching
+
+Cloudflare caches pages at its edge (Workers Caching): fresh for 10 minutes, then served stale for up to a day while it re-renders. A page opts in with `export const route = { info: { cache: "page" } }`, and a layout's opt-in covers the pages under it. An API-style route sets its own headers with `withCachePolicy` from `apps/web/src/server/cache.ts`. Everything else leaves with `no-store`. Never opt in a page that varies per visitor. See `docs/adr/0002-page-caching.md`.
+
 ## Figma
 
 The root design file is [Bryt Designs v3 (2026)](https://www.figma.com/design/f8OmlqSvL0d4JhS4BNA6Dd/Bryt-Designs-v3--2026-?node-id=0-1): file key `f8OmlqSvL0d4JhS4BNA6Dd`, root node `0:1`. Reference it for every design, component, token or layout question, and start Figma MCP sessions with this file key unless the user links a different file. A node link into this file only narrows where to look.

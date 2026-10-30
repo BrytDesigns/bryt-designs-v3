@@ -2,8 +2,10 @@ import { Title } from "@solidjs/meta";
 import type { RouteDefinition } from "@solidjs/router";
 import { httpStatus } from "@solidjs/web";
 
-// Runs in preload so the status is set before the response head flushes.
 export const route = {
+  // Cached for 10 minutes, so a page published at this URL shows within that.
+  info: { cache: "page" },
+  // Runs in preload so the status is set before the response head flushes.
   preload: () => httpStatus(404),
 } satisfies RouteDefinition;
 
