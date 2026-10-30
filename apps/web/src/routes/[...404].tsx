@@ -11,8 +11,8 @@ export default function NotFound() {
   return (
     <main class="flex min-h-screen flex-col items-center justify-center gap-6">
       <Title>Not Found - Bryt Designs</Title>
-      <h1 class="text-3xl font-semibold">Page not found</h1>
-      <a class="underline" href="/">
+      <h1 class="text-heading-h3">Page not found</h1>
+      <a class="text-link underline" href="/">
         Back home
       </a>
     </main>
