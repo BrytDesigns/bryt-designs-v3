@@ -9,7 +9,7 @@ export default function Home() {
   return (
     <main class="flex min-h-screen flex-col items-center justify-center gap-6">
       <Title>Bryt Designs</Title>
-      <h1 class="text-3xl font-semibold">Bryt Designs</h1>
+      <h1 class="text-heading-h1">Bryt Designs</h1>
       <Button onClick={() => setCount(count() + 1)}>Clicks: {count()}</Button>
     </main>
   );
