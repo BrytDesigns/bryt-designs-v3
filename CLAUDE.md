@@ -32,6 +32,7 @@ pnpm workspaces, no Turborepo. Two folders, packages scoped `@repo/*`:
   - `design-system`: base styles, the Tailwind setup and brand tokens (`@repo/design-system/styles.css`).
   - `ui`: Kobalte components styled with the design system, one entry per component (`@repo/ui/button`).
   - `wordpress`: the WordPress GraphQL client the Insights pages read. Operations live in `src/queries.graphql`; `pnpm --filter @repo/wordpress codegen` regenerates the typed `.graphql.ts` beside it (committed, never edited), and `schema:pull` refreshes `src/schema.graphql`, which codegen checks them against.
+  - `analytics`: the Tag Manager container loader and a typed `track()`. Tags, triggers and conversions live in Tag Manager, not in code.
 
 Packages ship TypeScript source with no build step; the app's Vite build compiles them. Imports only flow from apps into packages, and from `ui` into `design-system` or `core`; `core` never imports UI code. A package that uses Tailwind classes exports a `styles.css` holding `@source "./"`, which the app imports after the design system's (see `apps/web/src/index.css`).
 

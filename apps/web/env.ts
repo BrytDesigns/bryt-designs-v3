@@ -17,6 +17,12 @@ export default composeEnv(
       // Signs the session cookie. Comma-separated, newest first; see src/server/session.ts.
       SESSION_SECRET: Schema.String.check(Schema.isMinLength(32)),
     },
+    client: {
+      // Tag Manager container, passed to @repo/analytics by Document.tsx. Unset
+      // (local dev) loads no container, so no traffic reaches GA4; set it for
+      // staging and production.
+      VITE_GTM_ID: Schema.UndefinedOr(Schema.String.check(Schema.isPattern(/^GTM-[A-Z0-9]+$/))),
+    },
   }),
   wordpressEnv,
 );

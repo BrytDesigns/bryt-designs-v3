@@ -1,4 +1,394 @@
 @import "tailwindcss";
 
-/* Brand tokens (@theme colors, type scale, fonts) go here, taken from the root
-   Figma file named in CLAUDE.md. */
+/* Brand tokens from the root Figma file (CLAUDE.md), "Typography Styles" frame
+   210:1542 and the page designs. Tailwind's default colors and font sizes are
+   removed: these tokens are the only ones the site can use, so a one-off value
+   has to be an arbitrary class (`text-[15px]`) that stands out in review. */
+
+@theme {
+  --color-*: initial;
+  --text-*: initial;
+  --radius-*: initial;
+
+  /* Figma paint style in the comment. Other alphas the design uses on raw
+     fills (white at 8%, 40%, 88%) take Tailwind's modifier: `bg-white/8`. */
+  --color-accent: #f9bd09; /* color-01 */
+  --color-surface-dark: #0d0d0d; /* surface-dark */
+  --color-black: #000; /* black */
+  --color-white: #fff; /* white */
+  --color-white-12: rgb(255 255 255 / 0.12); /* white-12 */
+  --color-white-32: rgb(255 255 255 / 0.32); /* white-32 */
+
+  /* No @font-face yet: the files land in ./fonts/ in a follow-up, and these
+     names already match them. Until then the fallbacks render. */
+  --font-sans: "Aktiv Grotesk", "Helvetica Neue", Arial, sans-serif;
+  --font-serif: "Instrument Serif", Georgia, serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+
+  /* Layout, measured across the six page designs at 1920px and rounded to the
+     4px scale. Spacing otherwise uses Tailwind's default 4px steps. */
+  --container-narrow: 60rem; /* 960: centred hero and intro copy (942-1022) */
+  --container-content: 90rem; /* 1440: main content column (1434) */
+  --container-wide: 101.25rem; /* 1620: header and footer (1617-1680) */
+  --spacing-gutter: clamp(1rem, 0.6359rem + 1.5534vw, 2.5rem); /* 16 -> 40 */
+  --spacing-section-y: clamp(4rem, 3.4539rem + 2.3301vw, 6.25rem); /* 64 -> 100 */
+
+  /* Named by role, like Gertex's. Pills and circles (buttons, tags, icon
+     buttons, progress bars) use Tailwind's built-in `rounded-full`. */
+  --radius-panel: 1.5rem; /* 24: surface-dark panels, case study cards, large images (also 20) */
+  --radius-card: 1rem; /* 16: logo cells, value and problem cards, team photos (16-18) */
+  --radius-input: 0.75rem; /* 12: form inputs, small media tiles (11-12) */
+
+  /* Names shared with Gertex. */
+  --focus-ring-color: var(--color-accent);
+  --focus-ring-width: 2px;
+}
+
+@layer base {
+  body {
+    @apply bg-black text-body-base text-white antialiased;
+  }
+
+  /* Global keyboard focus ring; `:where()` keeps it at zero specificity so any
+     component can restyle it. */
+  :where(
+    a[href],
+    button,
+    input,
+    select,
+    textarea,
+    summary,
+    [role="button"],
+    [role="link"],
+    [tabindex]
+  ):focus-visible {
+    outline: var(--focus-ring-width) solid var(--focus-ring-color);
+    outline-offset: 2px;
+  }
+}
+
+/* --------------------------------------------------------------------------
+ * Text styles: one class per Figma text style, named after its path
+ * (`Heading/H1` -> `text-heading-h1`, `Body/L` -> `text-body-lg`). Each sets
+ * family, size, weight, line height and tracking. Figma letter spacing is a
+ * percent of the font size (`-2` -> `-0.02em`).
+ *
+ * Weight, line height and tracking read Tailwind's own variables first, the
+ * way its `text-*` sizes do, so `font-medium`, `leading-*` and `tracking-*`
+ * still override a style.
+ *
+ * Sizes 28px and up are fluid: they reach the Figma size at the 1920px design
+ * width and clamp to a floor at 375px. Within a family a larger style never
+ * gets smaller than the one below it on a phone. Smaller styles are fixed.
+ * ------------------------------------------------------------------------ */
+
+/* Display / Heading: Aktiv Grotesk Bold */
+@utility text-display {
+  font-family: var(--font-sans);
+  font-size: clamp(3.5rem, 2.3167rem + 5.0485vw, 8.375rem); /* 56 -> 134 */
+  font-weight: var(--tw-font-weight, 700);
+  line-height: var(--tw-leading, 1);
+  letter-spacing: var(--tw-tracking, -0.02em);
+}
+@utility text-heading-h1 {
+  font-family: var(--font-sans);
+  font-size: clamp(2.75rem, 1.9612rem + 3.3657vw, 6rem); /* 44 -> 96 */
+  font-weight: var(--tw-font-weight, 700);
+  line-height: var(--tw-leading, 1);
+  letter-spacing: var(--tw-tracking, -0.02em);
+  text-transform: uppercase;
+}
+@utility text-heading-h2 {
+  font-family: var(--font-sans);
+  font-size: clamp(2.375rem, 1.7379rem + 2.7184vw, 5rem); /* 38 -> 80 */
+  font-weight: var(--tw-font-weight, 700);
+  line-height: var(--tw-leading, 1);
+  letter-spacing: var(--tw-tracking, -0.02em);
+  text-transform: uppercase;
+}
+@utility text-heading-h3 {
+  font-family: var(--font-sans);
+  font-size: clamp(2rem, 1.6359rem + 1.5534vw, 3.5rem); /* 32 -> 56 */
+  font-weight: var(--tw-font-weight, 700);
+  line-height: var(--tw-leading, 1.1);
+  letter-spacing: var(--tw-tracking, -0.02em);
+}
+@utility text-heading-h4 {
+  font-family: var(--font-sans);
+  font-size: clamp(1.75rem, 1.568rem + 0.7767vw, 2.5rem); /* 28 -> 40 */
+  font-weight: var(--tw-font-weight, 700);
+  line-height: var(--tw-leading, 1.1);
+  letter-spacing: var(--tw-tracking, -0.02em);
+}
+@utility text-heading-h5 {
+  font-family: var(--font-sans);
+  font-size: clamp(1.5rem, 1.3786rem + 0.5178vw, 2rem); /* 24 -> 32 */
+  font-weight: var(--tw-font-weight, 700);
+  line-height: var(--tw-leading, 1.17);
+  letter-spacing: var(--tw-tracking, -0.02em);
+}
+@utility text-heading-h6 {
+  font-family: var(--font-sans);
+  font-size: 1.5rem; /* 24 */
+  font-weight: var(--tw-font-weight, 700);
+  line-height: var(--tw-leading, 1.3);
+  letter-spacing: var(--tw-tracking, -0.01em);
+}
+
+/* Accent / Stat: Instrument Serif Italic */
+@utility text-accent-h1 {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: clamp(2.75rem, 1.9612rem + 3.3657vw, 6rem); /* 44 -> 96 */
+  font-weight: var(--tw-font-weight, 400);
+  line-height: var(--tw-leading, 1);
+  letter-spacing: var(--tw-tracking, 0);
+  text-transform: uppercase;
+}
+@utility text-accent-h2 {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: clamp(2.375rem, 1.7379rem + 2.7184vw, 5rem); /* 38 -> 80 */
+  font-weight: var(--tw-font-weight, 400);
+  line-height: var(--tw-leading, 1);
+  letter-spacing: var(--tw-tracking, 0);
+  text-transform: uppercase;
+}
+@utility text-accent-h3 {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: clamp(2rem, 1.6359rem + 1.5534vw, 3.5rem); /* 32 -> 56 */
+  font-weight: var(--tw-font-weight, 400);
+  line-height: var(--tw-leading, 1.2);
+  letter-spacing: var(--tw-tracking, -0.02em);
+}
+@utility text-accent-h4 {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: clamp(1.875rem, 1.6323rem + 1.0356vw, 2.875rem); /* 30 -> 46 */
+  font-weight: var(--tw-font-weight, 400);
+  line-height: var(--tw-leading, 1.1);
+  letter-spacing: var(--tw-tracking, 0);
+}
+@utility text-accent-eyebrow {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 1.625rem; /* 26 */
+  font-weight: var(--tw-font-weight, 400);
+  line-height: var(--tw-leading, normal);
+  letter-spacing: var(--tw-tracking, 0.3em);
+  text-transform: uppercase;
+}
+@utility text-stat-xl {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: clamp(4rem, 2.8471rem + 4.9191vw, 8.75rem); /* 64 -> 140 */
+  font-weight: var(--tw-font-weight, 400);
+  line-height: var(--tw-leading, normal);
+  letter-spacing: var(--tw-tracking, 0);
+}
+@utility text-stat-lg {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: clamp(3rem, 2.3932rem + 2.589vw, 5.5rem); /* 48 -> 88 */
+  font-weight: var(--tw-font-weight, 400);
+  line-height: var(--tw-leading, 1);
+  letter-spacing: var(--tw-tracking, 0);
+  text-transform: uppercase;
+}
+@utility text-stat-md {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: clamp(2.5rem, 2.0146rem + 2.0712vw, 4.5rem); /* 40 -> 72 */
+  font-weight: var(--tw-font-weight, 400);
+  line-height: var(--tw-leading, 1);
+  letter-spacing: var(--tw-tracking, 0);
+}
+
+/* Body / Caption: Aktiv Grotesk Regular */
+@utility text-body-statement {
+  font-family: var(--font-sans);
+  font-size: clamp(2rem, 1.6359rem + 1.5534vw, 3.5rem); /* 32 -> 56 */
+  font-weight: var(--tw-font-weight, 400);
+  line-height: var(--tw-leading, 1.2);
+  letter-spacing: var(--tw-tracking, -0.02em);
+}
+@utility text-body-xl {
+  font-family: var(--font-sans);
+  font-size: clamp(1.625rem, 1.4733rem + 0.6472vw, 2.25rem); /* 26 -> 36 */
+  font-weight: var(--tw-font-weight, 400);
+  line-height: var(--tw-leading, normal);
+  letter-spacing: var(--tw-tracking, 0);
+}
+@utility text-body-quote {
+  font-family: var(--font-sans);
+  font-size: clamp(1.5rem, 1.3483rem + 0.6472vw, 2.125rem); /* 24 -> 34 */
+  font-weight: var(--tw-font-weight, 400);
+  line-height: var(--tw-leading, 1.35);
+  letter-spacing: var(--tw-tracking, -0.01em);
+}
+@utility text-body-lg {
+  font-family: var(--font-sans);
+  font-size: clamp(1.5rem, 1.4393rem + 0.2589vw, 1.75rem); /* 24 -> 28 */
+  font-weight: var(--tw-font-weight, 400);
+  line-height: var(--tw-leading, normal);
+  letter-spacing: var(--tw-tracking, -0.01em);
+}
+@utility text-body-md {
+  font-family: var(--font-sans);
+  font-size: 1.5rem; /* 24 */
+  font-weight: var(--tw-font-weight, 400);
+  line-height: var(--tw-leading, normal);
+  letter-spacing: var(--tw-tracking, -0.01em);
+}
+@utility text-body-lead {
+  font-family: var(--font-sans);
+  font-size: 1.25rem; /* 20 */
+  font-weight: var(--tw-font-weight, 400);
+  line-height: var(--tw-leading, 1.6);
+  letter-spacing: var(--tw-tracking, 0);
+}
+@utility text-body-base {
+  font-family: var(--font-sans);
+  font-size: 1.125rem; /* 18 */
+  font-weight: var(--tw-font-weight, 400);
+  line-height: var(--tw-leading, 1.6);
+  letter-spacing: var(--tw-tracking, 0);
+}
+@utility text-body-sm {
+  font-family: var(--font-sans);
+  font-size: 1rem; /* 16 */
+  font-weight: var(--tw-font-weight, 400);
+  line-height: var(--tw-leading, 1.5);
+  letter-spacing: var(--tw-tracking, 0);
+}
+@utility text-body-xs {
+  font-family: var(--font-sans);
+  font-size: 0.875rem; /* 14 */
+  font-weight: var(--tw-font-weight, 400);
+  line-height: var(--tw-leading, normal);
+  letter-spacing: var(--tw-tracking, 0);
+}
+@utility text-caption {
+  font-family: var(--font-sans);
+  font-size: 0.8125rem; /* 13 */
+  font-weight: var(--tw-font-weight, 400);
+  line-height: var(--tw-leading, normal);
+  letter-spacing: var(--tw-tracking, 0);
+}
+@utility text-caption-caps {
+  font-family: var(--font-sans);
+  font-size: 0.8125rem; /* 13 */
+  font-weight: var(--tw-font-weight, 400);
+  line-height: var(--tw-leading, normal);
+  letter-spacing: var(--tw-tracking, 0.2em);
+  text-transform: uppercase;
+}
+
+/* Interactive: Aktiv Grotesk Medium */
+@utility text-button {
+  font-family: var(--font-sans);
+  font-size: 1.125rem; /* 18 */
+  font-weight: var(--tw-font-weight, 500);
+  line-height: var(--tw-leading, normal);
+  letter-spacing: var(--tw-tracking, -0.01em);
+}
+@utility text-nav-link {
+  font-family: var(--font-sans);
+  font-size: 1rem; /* 16 */
+  font-weight: var(--tw-font-weight, 500);
+  line-height: var(--tw-leading, normal);
+  letter-spacing: var(--tw-tracking, 0.06em);
+  text-transform: uppercase;
+}
+@utility text-link {
+  font-family: var(--font-sans);
+  font-size: 1rem; /* 16 */
+  font-weight: var(--tw-font-weight, 500);
+  line-height: var(--tw-leading, normal);
+  letter-spacing: var(--tw-tracking, -0.01em);
+}
+@utility text-tag {
+  font-family: var(--font-sans);
+  font-size: 0.875rem; /* 14 */
+  font-weight: var(--tw-font-weight, 500);
+  line-height: var(--tw-leading, normal);
+  letter-spacing: var(--tw-tracking, 0);
+}
+
+/* Eyebrow / Label: Aktiv Grotesk Bold, except Eyebrow/S in IBM Plex Mono */
+@utility text-eyebrow-lg {
+  font-family: var(--font-sans);
+  font-size: 1.125rem; /* 18 */
+  font-weight: var(--tw-font-weight, 700);
+  line-height: var(--tw-leading, 1.03);
+  letter-spacing: var(--tw-tracking, 0.2em);
+  text-transform: uppercase;
+}
+@utility text-eyebrow-md {
+  font-family: var(--font-sans);
+  font-size: 1rem; /* 16 */
+  font-weight: var(--tw-font-weight, 700);
+  line-height: var(--tw-leading, 1.03);
+  letter-spacing: var(--tw-tracking, 0.2em);
+  text-transform: uppercase;
+}
+@utility text-eyebrow-sm {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem; /* 13 */
+  font-weight: var(--tw-font-weight, 400);
+  line-height: var(--tw-leading, normal);
+  letter-spacing: var(--tw-tracking, 0.2em);
+  text-transform: uppercase;
+}
+@utility text-label-lg {
+  font-family: var(--font-sans);
+  font-size: 1.125rem; /* 18 */
+  font-weight: var(--tw-font-weight, 700);
+  line-height: var(--tw-leading, normal);
+  letter-spacing: var(--tw-tracking, 0);
+}
+@utility text-label-md {
+  font-family: var(--font-sans);
+  font-size: 1rem; /* 16 */
+  font-weight: var(--tw-font-weight, 700);
+  line-height: var(--tw-leading, normal);
+  letter-spacing: var(--tw-tracking, 0);
+}
+
+/* Mono: IBM Plex Mono */
+@utility text-mono-md {
+  font-family: var(--font-mono);
+  font-size: 1rem; /* 16 */
+  font-weight: var(--tw-font-weight, 400);
+  line-height: var(--tw-leading, 1.5);
+  letter-spacing: var(--tw-tracking, 0);
+}
+@utility text-mono-sm {
+  font-family: var(--font-mono);
+  font-size: 0.875rem; /* 14 */
+  font-weight: var(--tw-font-weight, 400);
+  line-height: var(--tw-leading, normal);
+  letter-spacing: var(--tw-tracking, 0);
+}
+@utility text-mono-xs {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem; /* 13 */
+  font-weight: var(--tw-font-weight, 400);
+  line-height: var(--tw-leading, normal);
+  letter-spacing: var(--tw-tracking, 0);
+}
+@utility text-mono-xs-semibold {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem; /* 13 */
+  font-weight: var(--tw-font-weight, 600);
+  line-height: var(--tw-leading, normal);
+  letter-spacing: var(--tw-tracking, 0);
+}
+@utility text-mono-2xs {
+  font-family: var(--font-mono);
+  font-size: 0.75rem; /* 12 */
+  font-weight: var(--tw-font-weight, 400);
+  line-height: var(--tw-leading, normal);
+  letter-spacing: var(--tw-tracking, 0);
+}

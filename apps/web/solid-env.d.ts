@@ -8,6 +8,7 @@ declare module 'virtual:env/client' {
     ? O
     : string;
   const env: {
+    readonly "VITE_GTM_ID": __Out<__Schema["client"]["VITE_GTM_ID"]>;
   };
   export { env };
   export default env;
@@ -22,6 +23,7 @@ declare module 'virtual:env/server' {
     readonly "SESSION_SECRET": __Out<__Schema["server"]["SESSION_SECRET"]>;
     readonly "WORDPRESS_GRAPHQL_URL": __Out<__Schema["server"]["WORDPRESS_GRAPHQL_URL"]>;
     readonly "SITE_URL": __Out<__Schema["server"]["SITE_URL"]>;
+    readonly "VITE_GTM_ID": __Out<__Schema["client"]["VITE_GTM_ID"]>;
   };
   export { env };
   export default env;
