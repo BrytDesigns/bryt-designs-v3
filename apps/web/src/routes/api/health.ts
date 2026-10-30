@@ -1,3 +1,6 @@
-import type { APIHandler } from "filesystem-routing/api";
+import { Effect } from "effect";
 
-export const GET: APIHandler = () => Response.json({ ok: true });
+import { apiRoute } from "../../server/runtime";
+
+// Effect.sync, not Effect.succeed: a Response body reads once, so build one per request.
+export const GET = apiRoute(Effect.sync(() => Response.json({ ok: true })));

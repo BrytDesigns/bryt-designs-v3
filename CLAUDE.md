@@ -28,7 +28,7 @@ pnpm workspaces, no Turborepo. Two folders, packages scoped `@repo/*`:
 
 - **`apps/`**: deployable apps. `apps/web` (`@repo/web`) is the marketing site.
 - **`packages/`**: utility libraries and services the apps share.
-  - `core`: Effect utilities and services. Imports no UI code.
+  - `core`: Effect utilities and services: `@repo/core/env` (per-package env vars) and `@repo/core/request` (the request as a service, and the runner every endpoint goes through). Imports no UI code.
   - `design-system`: base styles, the Tailwind setup and brand tokens (`@repo/design-system/styles.css`).
   - `ui`: Kobalte components styled with the design system, one entry per component (`@repo/ui/button`).
   - `wordpress`: the WordPress GraphQL client the Insights pages read. Operations live in `src/queries.graphql`; `pnpm --filter @repo/wordpress codegen` regenerates the typed `.graphql.ts` beside it (committed, never edited), and `schema:pull` refreshes `src/schema.graphql`, which codegen checks them against.
@@ -55,6 +55,13 @@ Before writing any Effect code, first read `node_modules/effect/AGENTS.md`
 
 If you need to learn more about particular Effect apis and concepts that the
 guide doesn't cover, search through the source code in `node_modules/effect/src`.
+
+All server code is Effect v4. Middleware, API routes, server functions and
+route preloads run as Effects on the shared runtime in
+`apps/web/src/server/runtime.ts`, through its helpers. Helpers return Effects,
+Layers or plain values and never run them. A service that needs the request
+reads `RequestEvent` from `@repo/core/request`, not `getRequestEvent()`. See
+`docs/adr/0003-effect-server-runtime.md`.
 
 ## Alchemy
 

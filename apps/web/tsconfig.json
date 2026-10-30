@@ -3,5 +3,5 @@
   "compilerOptions": {
     "types": ["vite/client"]
   },
-  "include": ["src", "env.ts", "solid-env.d.ts", "file-routes.d.ts", "vite.config.ts"]
+  "include": ["src", "env.ts", "solid-env.d.ts", "file-routes.d.ts", "vite.config.ts", "vitest.config.ts"]
 }
