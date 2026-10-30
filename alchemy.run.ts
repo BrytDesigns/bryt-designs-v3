@@ -27,6 +27,10 @@ export default Alchemy.Stack(
         include: ["**/*", "../../packages/*/src/**", "../../packages/*/package.json"],
         lockfile: true,
       },
+      // Workers Caching: Cloudflare answers repeat requests from cache without
+      // running the Worker, as the response headers allow. Every deploy starts
+      // with an empty cache. See docs/adr/0002-page-caching.md.
+      cache: { enabled: true },
       // The server reads these from process.env at boot (see apps/web/env.ts).
       env: {
         SESSION_SECRET: Config.Redacted("SESSION_SECRET"),
