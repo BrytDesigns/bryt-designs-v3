@@ -1,0 +1,8 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    // For scripts/pull-schema.ts, which runs under Node.
+    "types": ["node"]
+  },
+  "include": ["src", "scripts", "graphql.config.ts"]
+}

@@ -27,9 +27,14 @@ export default Alchemy.Stack(
         include: ["**/*", "../../packages/*/src/**", "../../packages/*/package.json"],
         lockfile: true,
       },
+      // The server reads these from process.env at boot (see apps/web/env.ts).
       env: {
-        // Bound as a secret. The server reads it from process.env at boot (see env.ts).
         SESSION_SECRET: Config.Redacted("SESSION_SECRET"),
+        // Not a secret, but any Config binds as one.
+        WORDPRESS_GRAPHQL_URL: Config.String("WORDPRESS_GRAPHQL_URL"),
+        // The stage's own URL: its first custom domain, else its workers.dev URL.
+        // Production needs www.brytdesigns.com listed first when domains attach (#9).
+        SITE_URL: Cloudflare.Worker.URL,
       },
     });
 

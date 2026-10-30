@@ -1,0 +1,273 @@
+# Each operation is a method on the WordPress service: `wordpress.GetPost({ slug })`.
+# Run `pnpm codegen` after editing, which checks them against schema.graphql.
+
+query GetPost($slug: ID!) {
+  post(id: $slug, idType: SLUG) {
+    slug
+    title
+    content
+    excerpt
+    dateGmt
+    modifiedGmt
+    readingTime
+    featuredImage {
+      node {
+        ...Image
+      }
+    }
+    categories {
+      nodes {
+        name
+        slug
+      }
+    }
+    tags {
+      nodes {
+        name
+        slug
+      }
+    }
+    author {
+      node {
+        ...Author
+      }
+    }
+    seo {
+      ...PostSeo
+    }
+  }
+}
+
+# The ACF "Blog Post" group, kept out of GetPost: when the group is hidden from
+# GraphQL, WordPress rejects the whole query, and this failing must only drop
+# the FAQ, not the post.
+query GetPostFaq($slug: ID!) {
+  post(id: $slug, idType: SLUG) {
+    blogPost {
+      faq {
+        question
+        answer
+      }
+    }
+  }
+}
+
+# Newest first. `category`, `tag` and `author` take slugs.
+query ListPosts($first: Int = 12, $after: String, $category: String, $tag: String, $author: String) {
+  posts(first: $first, after: $after, where: { categoryName: $category, tag: $tag, authorName: $author }) {
+    pageInfo {
+      hasNextPage
+      endCursor
+      total
+    }
+    nodes {
+      slug
+      title
+      excerpt
+      dateGmt
+      readingTime
+      featuredImage {
+        node {
+          ...Image
+        }
+      }
+      categories {
+        nodes {
+          name
+          slug
+        }
+      }
+      author {
+        node {
+          name
+          slug
+        }
+      }
+    }
+  }
+}
+
+query GetCategory($slug: ID!) {
+  category(id: $slug, idType: SLUG) {
+    name
+    slug
+    description
+    count
+    seo {
+      ...TermSeo
+    }
+  }
+}
+
+query GetTag($slug: ID!) {
+  tag(id: $slug, idType: SLUG) {
+    name
+    slug
+    description
+    count
+    seo {
+      ...TermSeo
+    }
+  }
+}
+
+query GetAuthor($slug: ID!) {
+  user(id: $slug, idType: SLUG) {
+    ...Author
+    seo {
+      ...AuthorSeo
+    }
+  }
+}
+
+# Sitemap listings, 100 per page (WPGraphQL's maximum). Page through them with
+# `GraphQLClient.items`, which drives `$after`.
+
+query ListPostSlugs($after: String) {
+  posts(first: 100, after: $after) {
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+    nodes {
+      slug
+      modifiedGmt
+    }
+  }
+}
+
+query ListCategorySlugs($after: String) {
+  categories(first: 100, after: $after, where: { hideEmpty: true }) {
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+    nodes {
+      slug
+    }
+  }
+}
+
+query ListTagSlugs($after: String) {
+  tags(first: 100, after: $after, where: { hideEmpty: true }) {
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+    nodes {
+      slug
+    }
+  }
+}
+
+query ListAuthorSlugs($after: String) {
+  users(first: 100, after: $after, where: { hasPublishedPosts: [POST] }) {
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+    nodes {
+      slug
+    }
+  }
+}
+
+fragment Image on MediaItem {
+  sourceUrl(size: _1536X1536)
+  altText
+  mediaDetails {
+    width
+    height
+  }
+}
+
+fragment Author on User {
+  name
+  slug
+  description
+  avatar(size: 125) {
+    url
+    width
+    height
+  }
+  # ACF "Profile Fields" group.
+  profileFields {
+    positionTitle
+  }
+}
+
+fragment SeoImage on MediaItem {
+  sourceUrl
+  altText
+  mediaDetails {
+    width
+    height
+  }
+}
+
+# Yoast SEO. Its three types share these field names.
+fragment PostSeo on PostTypeSEO {
+  title
+  metaDesc
+  canonical
+  metaRobotsNoindex
+  metaRobotsNofollow
+  opengraphTitle
+  opengraphDescription
+  opengraphType
+  opengraphPublishedTime
+  opengraphModifiedTime
+  opengraphImage {
+    ...SeoImage
+  }
+  twitterTitle
+  twitterDescription
+  twitterImage {
+    ...SeoImage
+  }
+  schema {
+    raw
+  }
+}
+
+fragment TermSeo on TaxonomySEO {
+  title
+  metaDesc
+  canonical
+  metaRobotsNoindex
+  metaRobotsNofollow
+  opengraphTitle
+  opengraphDescription
+  opengraphImage {
+    ...SeoImage
+  }
+  twitterTitle
+  twitterDescription
+  twitterImage {
+    ...SeoImage
+  }
+  schema {
+    raw
+  }
+}
+
+fragment AuthorSeo on SEOUser {
+  title
+  metaDesc
+  canonical
+  metaRobotsNoindex
+  metaRobotsNofollow
+  opengraphTitle
+  opengraphDescription
+  opengraphImage {
+    ...SeoImage
+  }
+  twitterTitle
+  twitterDescription
+  twitterImage {
+    ...SeoImage
+  }
+  schema {
+    raw
+  }
+}
