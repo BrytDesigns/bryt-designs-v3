@@ -1,19 +1,35 @@
 import { Meta, Title } from "@solidjs/meta";
 import { For } from "solid-js";
 
+import { Button } from "@repo/ui/button";
+
 // An internal page that renders every design-system token, for checking them
 // against the Figma type sheet (210:1542). Live in every environment, so it
 // sets its own noindex rather than relying on a site-wide switch.
 
-type Swatch = { cls: string; token: string; figma: string; value: string };
+type Theme = { cls: "theme-dark" | "theme-light"; name: string; key: "dark" | "light" };
 
+const themes: Theme[] = [
+  { cls: "theme-dark", name: "Dark (default)", key: "dark" },
+  { cls: "theme-light", name: "Light", key: "light" },
+];
+
+type Swatch = { cls: string; token: string; figma: string; dark: string; light: string };
+
+// Semantic colors: each column below renders them under its own theme class.
 const colors: Swatch[] = [
-  { cls: "bg-accent", token: "accent", figma: "color-01", value: "#F9BD09" },
-  { cls: "bg-surface-dark", token: "surface-dark", figma: "surface-dark", value: "#0D0D0D" },
-  { cls: "bg-black", token: "black", figma: "black", value: "#000000" },
-  { cls: "bg-white", token: "white", figma: "white", value: "#FFFFFF" },
-  { cls: "bg-white-12", token: "white-12", figma: "white-12", value: "#FFFFFF at 12%" },
-  { cls: "bg-white-32", token: "white-32", figma: "white-32", value: "#FFFFFF at 32%" },
+  { cls: "bg-background", token: "background", figma: "black", dark: "#000000", light: "#FFFFFF" },
+  { cls: "bg-foreground", token: "foreground", figma: "white", dark: "#FFFFFF", light: "#000000" },
+  { cls: "bg-surface", token: "surface", figma: "surface-dark", dark: "#0D0D0D", light: "#F2F2F2" },
+  { cls: "bg-border", token: "border", figma: "white-12", dark: "white at 12%", light: "black at 12%" },
+  { cls: "bg-border-strong", token: "border-strong", figma: "white-32", dark: "white at 32%", light: "black at 32%" },
+  { cls: "bg-accent", token: "accent", figma: "color-01", dark: "#F9BD09", light: "#8B6A04" },
+  { cls: "bg-accent-fill", token: "accent-fill", figma: "color-01", dark: "#F9BD09", light: "#F9BD09" },
+];
+
+const fixedColors = [
+  { cls: "bg-black", token: "black", value: "#000000" },
+  { cls: "bg-white", token: "white", value: "#FFFFFF" },
 ];
 
 type TextStyle = {
@@ -94,23 +110,107 @@ export default function DesignSystem() {
       <header class="flex flex-col gap-4">
         <p class="text-eyebrow-sm text-accent">Internal</p>
         <h1 class="text-heading-h2">Design system</h1>
-        <p class="text-body-base text-white-32">
+        <p class="text-body-base text-foreground/60">
           Every token in @repo/design-system. Aktiv Grotesk, Instrument Serif and IBM Plex Mono
           have no font files yet, so their fallbacks render here.
         </p>
       </header>
 
       <section class="flex flex-col gap-8">
-        <h2 class="text-heading-h4">Colors</h2>
-        <ul class="grid grid-cols-2 gap-6 md:grid-cols-3">
-          <For each={colors}>
-            {(swatch) => (
-              <li class="flex flex-col gap-3">
-                <div class={["h-24 rounded-card border border-white-12", swatch.cls]} />
-                <p class="text-label-md">{swatch.token}</p>
-                <p class="text-mono-xs text-white-32">
-                  {swatch.cls} · {swatch.figma} · {swatch.value}
+        <h2 class="text-heading-h4">Colors and themes</h2>
+        <p class="text-body-base text-foreground/60">
+          Each column is one theme class on a section, so everything inside follows it. On a whole
+          page, the class goes on &lt;html&gt;. Light values are provisional.
+        </p>
+        <div class="grid gap-6 md:grid-cols-2">
+          <For each={themes}>
+            {(theme) => (
+              <div class={[theme.cls, "flex flex-col gap-10 rounded-panel border border-border p-8"]}>
+                <p class="text-eyebrow-sm">
+                  .{theme.cls} · {theme.name}
                 </p>
+
+                <ul class="grid grid-cols-2 gap-6">
+                  <For each={colors}>
+                    {(swatch) => (
+                      <li class="flex flex-col gap-2">
+                        <div class={["h-16 rounded-card border border-border", swatch.cls]} />
+                        <p class="text-label-md">{swatch.token}</p>
+                        <p class="text-mono-2xs text-foreground/60">
+                          {swatch[theme.key]} · Figma {swatch.figma}
+                        </p>
+                      </li>
+                    )}
+                  </For>
+                </ul>
+
+                <div class="flex flex-col gap-6">
+                  <p class="text-label-lg">Accent: which one to use</p>
+                  <div class="flex flex-col gap-2">
+                    <div>
+                      <Button>Get a Proposal</Button>
+                    </div>
+                    <p class="text-mono-2xs text-foreground/60">
+                      Buttons: bg-accent-fill text-black
+                    </p>
+                  </div>
+                  <div class="flex flex-col gap-2">
+                    <p class="text-heading-h5">
+                      A <span class="bg-accent-fill px-2 text-black">culture</span> built
+                    </p>
+                    <p class="text-mono-2xs text-foreground/60">
+                      Highlight box, progress bar, active dot: bg-accent-fill, black text on it
+                    </p>
+                  </div>
+                  <div class="flex flex-col gap-2">
+                    <p class="text-eyebrow-sm text-accent">Our services</p>
+                    <p class="text-heading-h5">
+                      Built to <em class="text-accent-h4 text-accent">perform</em>
+                    </p>
+                    <p class="text-stat-md text-accent">+38%</p>
+                    <p class="text-mono-2xs text-foreground/60">
+                      Eyebrows, accent words, stats, icons: text-accent
+                    </p>
+                  </div>
+                  <div class="flex flex-col gap-2">
+                    <div>
+                      <span class="text-link outline-2 outline-offset-2 outline-accent">Learn more</span>
+                    </div>
+                    <p class="text-mono-2xs text-foreground/60">
+                      Focus ring: accent, applied globally on :focus-visible
+                    </p>
+                  </div>
+                  <div class="flex flex-col gap-2 border-t border-border pt-6">
+                    <p class="text-label-md text-accent-fill">Our services</p>
+                    <p class="text-mono-2xs text-foreground/60">
+                      Don't: text-accent-fill as text. Unreadable on light (1.7:1)
+                    </p>
+                    <div>
+                      <span class="inline-block rounded-full bg-accent px-4 py-2 text-button text-black">
+                        Get a Proposal
+                      </span>
+                    </div>
+                    <p class="text-mono-2xs text-foreground/60">
+                      Don't: bg-accent for a button. It turns gold on light
+                    </p>
+                  </div>
+                </div>
+
+                <p class="text-mono-xs">
+                  <span class="light:hidden">dark: variant active</span>
+                  <span class="hidden light:inline">light: variant active</span>
+                </p>
+              </div>
+            )}
+          </For>
+        </div>
+        <ul class="grid grid-cols-2 gap-6 md:grid-cols-4">
+          <For each={fixedColors}>
+            {(swatch) => (
+              <li class="flex flex-col gap-2">
+                <div class={["h-16 rounded-card border border-border", swatch.cls]} />
+                <p class="text-label-md">{swatch.token}</p>
+                <p class="text-mono-2xs text-foreground/60">{swatch.value} in both themes</p>
               </li>
             )}
           </For>
@@ -122,9 +222,9 @@ export default function DesignSystem() {
         <ul class="flex flex-col">
           <For each={textStyles}>
             {(style) => (
-              <li class="flex flex-col gap-4 border-t border-white-12 py-8">
-                <p class="text-mono-xs text-white-32">
-                  <span class="text-white">{style.figma}</span> · {style.cls} · {style.font} ·{" "}
+              <li class="flex flex-col gap-4 border-t border-border py-8">
+                <p class="text-mono-xs text-foreground/60">
+                  <span class="text-foreground">{style.figma}</span> · {style.cls} · {style.font} ·{" "}
                   {style.size}px · {style.leading} · {style.tracking}
                   {style.upper ? " · uppercase" : ""}
                 </p>
@@ -141,21 +241,21 @@ export default function DesignSystem() {
           <For each={containers}>
             {(container) => (
               <li class="flex flex-col gap-3">
-                <p class="text-mono-xs text-white-32">
-                  <span class="text-white">{container.cls}</span> · {container.value}
+                <p class="text-mono-xs text-foreground/60">
+                  <span class="text-foreground">{container.cls}</span> · {container.value}
                 </p>
-                <div class={["h-12 w-full rounded-input bg-white-12", container.cls]} />
+                <div class={["h-12 w-full rounded-input bg-surface", container.cls]} />
               </li>
             )}
           </For>
           <li class="flex flex-col gap-3">
-            <p class="text-mono-xs text-white-32">
-              <span class="text-white">px-gutter</span> · 16 → 40px ·{" "}
-              <span class="text-white">py-section-y</span> · 64 → 100px
+            <p class="text-mono-xs text-foreground/60">
+              <span class="text-foreground">px-gutter</span> · 16 → 40px ·{" "}
+              <span class="text-foreground">py-section-y</span> · 64 → 100px
             </p>
             <div class="flex">
-              <div class="h-12 w-gutter bg-accent" />
-              <div class="h-section-y w-12 bg-white-32" />
+              <div class="h-12 w-gutter bg-accent-fill" />
+              <div class="h-section-y w-12 bg-border-strong" />
             </div>
           </li>
         </ul>
@@ -163,9 +263,9 @@ export default function DesignSystem() {
           <For each={radii}>
             {(radius) => (
               <li class="flex flex-col gap-3">
-                <div class={["h-24 border border-white-32 bg-surface-dark", radius.cls]} />
-                <p class="text-mono-xs text-white-32">
-                  <span class="text-white">{radius.cls}</span> · {radius.value}
+                <div class={["h-24 border border-border-strong bg-surface", radius.cls]} />
+                <p class="text-mono-xs text-foreground/60">
+                  <span class="text-foreground">{radius.cls}</span> · {radius.value}
                 </p>
               </li>
             )}

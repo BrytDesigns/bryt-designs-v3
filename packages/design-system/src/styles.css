@@ -10,14 +10,10 @@
   --text-*: initial;
   --radius-*: initial;
 
-  /* Figma paint style in the comment. Other alphas the design uses on raw
-     fills (white at 8%, 40%, 88%) take Tailwind's modifier: `bg-white/8`. */
-  --color-accent: #f9bd09; /* color-01 */
-  --color-surface-dark: #0d0d0d; /* surface-dark */
-  --color-black: #000; /* black */
-  --color-white: #fff; /* white */
-  --color-white-12: rgb(255 255 255 / 0.12); /* white-12 */
-  --color-white-32: rgb(255 255 255 / 0.32); /* white-32 */
+  /* Fixed in both themes: text on `accent-fill`, and overlays on photos. The
+     colors that change with the theme are below, after this block. */
+  --color-black: #000; /* Figma: black */
+  --color-white: #fff; /* Figma: white */
 
   /* No @font-face yet: the files land in ./fonts/ in a follow-up, and these
      names already match them. Until then the fallbacks render. */
@@ -35,22 +31,92 @@
 
   /* Named by role, like Gertex's. Pills and circles (buttons, tags, icon
      buttons, progress bars) use Tailwind's built-in `rounded-full`. */
-  --radius-panel: 1.5rem; /* 24: surface-dark panels, case study cards, large images (also 20) */
+  --radius-panel: 1.5rem; /* 24: surface panels, case study cards, large images (also 20) */
   --radius-card: 1rem; /* 16: logo cells, value and problem cards, team photos (16-18) */
   --radius-input: 0.75rem; /* 12: form inputs, small media tiles (11-12) */
 
-  /* Names shared with Gertex. */
-  --focus-ring-color: var(--color-accent);
+  /* Name shared with Gertex. */
   --focus-ring-width: 2px;
 }
 
+/* --------------------------------------------------------------------------
+ * Themes: dark (the default, as in Figma) and light.
+ *
+ * Components use these semantic colors, never a theme's raw values, so they
+ * work in both. `.theme-light` or `.theme-dark` on an element switches
+ * everything inside it: on <html> for a whole page, on a section for one
+ * section. No class means dark.
+ *
+ * `inline` is required: each utility then reads the `--theme-*` variable
+ * where it's used. A plain `@theme` would resolve it once at :root, and a
+ * theme class further down would never reach the utilities.
+ *
+ * Muted text and fills take an opacity modifier on these, which follows the
+ * theme too: `text-foreground/60` (the inactive steps), `bg-foreground/8`
+ * (the service pills).
+ * ------------------------------------------------------------------------ */
+@theme inline {
+  --color-background: var(--theme-background); /* page and section background */
+  --color-foreground: var(--theme-foreground); /* text and icons */
+  --color-surface: var(--theme-surface); /* raised panels and cards */
+  --color-border: var(--theme-border); /* dividers and 1px strokes */
+  --color-border-strong: var(--theme-border-strong); /* stronger strokes */
+
+  /* Two accents, because the brand yellow is unreadable as text on white
+     (1.7:1).
+     - `accent`: yellow you READ. Text, icons, the focus ring: eyebrows
+       (`text-eyebrow-sm text-accent`), accent words (`text-accent-h2
+       text-accent`), stats, an active step. Brand yellow on dark, a dark gold
+       on light, so it passes 4.5:1 in both.
+     - `accent-fill`: yellow you SEE as a shape. Button backgrounds
+       (`bg-accent-fill text-black`), the highlight box behind a word, the
+       progress bar, an active dot. Always brand yellow; put black text on it
+       in either theme.
+     Don't put `text-accent-fill` on a light background, and don't use
+     `bg-accent` for a button: on light it turns gold. */
+  --color-accent: var(--theme-accent);
+  --color-accent-fill: #f9bd09; /* Figma: color-01 */
+}
+
 @layer base {
+  /* Figma paint style in the comment. The light values are the dark palette
+     inverted, provisional until a light page is designed. */
+  :root,
+  .theme-dark {
+    color-scheme: dark;
+    --theme-background: #000; /* black */
+    --theme-foreground: #fff; /* white */
+    --theme-surface: #0d0d0d; /* surface-dark */
+    --theme-border: rgb(255 255 255 / 0.12); /* white-12 */
+    --theme-border-strong: rgb(255 255 255 / 0.32); /* white-32 */
+    --theme-accent: #f9bd09; /* color-01: 12.3:1 on black */
+  }
+
+  .theme-light {
+    color-scheme: light;
+    --theme-background: #fff;
+    --theme-foreground: #000;
+    --theme-surface: #f2f2f2;
+    --theme-border: rgb(0 0 0 / 0.12);
+    --theme-border-strong: rgb(0 0 0 / 0.32);
+    --theme-accent: #8b6a04; /* color-01's hue: 5.05:1 on white, 4.51:1 on surface */
+  }
+
+  /* A theme class also repaints its own element, so a light section on a
+     dark page needs nothing else. */
+  .theme-dark,
+  .theme-light {
+    background-color: var(--theme-background);
+    color: var(--theme-foreground);
+  }
+
   body {
-    @apply bg-black text-body-base text-white antialiased;
+    @apply bg-background text-body-base text-foreground antialiased;
   }
 
   /* Global keyboard focus ring; `:where()` keeps it at zero specificity so any
-     component can restyle it. */
+     component can restyle it. It's the theme's `accent`; set
+     `--focus-ring-color` (Gertex's name) on an element to override it. */
   :where(
     a[href],
     button,
@@ -62,8 +128,29 @@
     [role="link"],
     [tabindex]
   ):focus-visible {
-    outline: var(--focus-ring-width) solid var(--focus-ring-color);
+    outline: var(--focus-ring-width) solid var(--focus-ring-color, var(--theme-accent));
     outline-offset: 2px;
+  }
+}
+
+/* `dark:` and `light:` follow the theme classes above, not the visitor's OS
+   setting (Tailwind's default). Reach for them only when a token can't do the
+   job, such as the logo or an image with a version per theme:
+     <img class="light:hidden" src={logoWhite} />
+     <img class="hidden light:block" src={logoBlack} />
+   They handle one level of nesting (a dark section in a light page, or the
+   reverse), which is all a page needs. */
+@custom-variant light {
+  &:where(.theme-light, .theme-light *):not(:where(.theme-light .theme-dark, .theme-light .theme-dark *)) {
+    @slot;
+  }
+}
+@custom-variant dark {
+  &:not(:where(.theme-light, .theme-light *)) {
+    @slot;
+  }
+  &:where(.theme-light .theme-dark, .theme-light .theme-dark *) {
+    @slot;
   }
 }
 

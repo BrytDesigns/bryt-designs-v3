@@ -15,7 +15,7 @@ export function Button<T extends ValidComponent = "button">(
   const rest = omit(props as ButtonProps, "class");
   return (
     <ButtonPrimitive.Root
-      class={["rounded-full bg-accent px-4 py-2 text-button text-black hover:bg-white", props.class]}
+      class={["rounded-full bg-accent-fill px-4 py-2 text-button text-black hover:bg-foreground hover:text-background", props.class]}
       {...rest}
     />
   );
