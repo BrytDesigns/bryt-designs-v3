@@ -29,7 +29,7 @@
      4px scale. Spacing otherwise uses Tailwind's default 4px steps. */
   --container-narrow: 60rem; /* 960: centred hero and intro copy (942-1022) */
   --container-content: 90rem; /* 1440: main content column (1434) */
-  --container-wide: 101.25rem; /* 1620: Our Work, footer (1617-1620) */
+  --container-wide: 101.25rem; /* 1620: header and footer (1617-1680) */
   --spacing-gutter: clamp(1rem, 0.6359rem + 1.5534vw, 2.5rem); /* 16 -> 40 */
   --spacing-section-y: clamp(4rem, 3.4539rem + 2.3301vw, 6.25rem); /* 64 -> 100 */
 
