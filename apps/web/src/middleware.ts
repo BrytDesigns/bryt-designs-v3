@@ -6,7 +6,8 @@ import "virtual:env/server";
 import routes from "virtual:file-routes";
 
 // The chain fronts every request: page renders, server function calls and API
-// routes. Each middleware is `(event, next) => Response`.
+// routes. Each middleware is `(event, next) => Response`; write the app's own
+// with `middleware(...)` from src/server/runtime.ts, which runs them as Effects.
 
 // Serves the GET/POST/... exports of route modules; anything else goes down the chain.
 const handleAPI: StartMiddleware = createAPIHandler(routes);
